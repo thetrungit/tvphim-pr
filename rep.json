@@ -1,0 +1,8 @@
+{
+    "name": "Phim 4K",
+    "description": "Phim Vietsub",
+    "manifestVersion": 1,
+    "pluginLists": [
+      "https://raw.githubusercontent.com/thetrungit/tvphim-pr/main/tvphim.json"
+    ]
+  }
