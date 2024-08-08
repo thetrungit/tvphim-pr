@@ -1,27 +1,42 @@
-{
-    "name": "TVPhim",
-    "version": "1.0.0",
-    "plugin_type": "media",
-    "plugin_id": "tvphim",
-    "description": "Kho phim v\u00e0 ch\u01b0\u01a1ng tr\u00ecnh TV t\u1eeb TVPhim.us",
-    "author": "Your Name",
-    "language": "vi",
-    "url": "https://tvphim.us",
-    "icon": "https://example.com/icon.png",
-    "resources": [
-        {
-            "type": "catalog",
-            "name": "TVPhim Catalog",
-            "base_url": "https://tvphim.us",
-            "search_endpoint": "/search?q=%s",
-            "details_endpoint": "/phim/%s",
-            "languages": [
-                "vi"
-            ],
-            "categories": [
-                "TV Shows",
-                "Movies"
-            ]
-        }
-    ]
-}
+import requests
+from bs4 import BeautifulSoup
+import json
+
+def get_movie_urls(url):
+    response = requests.get(url)
+    response.raise_for_status()  # Kiểm tra lỗi HTTP
+
+    soup = BeautifulSoup(response.content, 'html.parser')
+
+    movie_urls = []
+    for movie_item in soup.find_all('div', class_='item'):
+        a_tag = movie_item.find('a', class_='poster')  # Tìm thẻ a bên trong class 'poster'
+        if a_tag and 'href' in a_tag.attrs:
+            movie_urls.append("https://tvphim.us" + a_tag['href'])  # Thêm tên miền vào URL
+
+    return movie_urls
+
+def get_movie_title(url):
+    response = requests.get(url)
+    response.raise_for_status()  
+    soup = BeautifulSoup(response.content, 'html.parser')
+    title_tag = soup.find('h1', class_='title')
+    if title_tag:
+        return title_tag.text.strip()
+    else:
+        return None  # Trả về None nếu không tìm thấy tiêu đề
+
+def create_json(movie_urls):
+    movie_list = []
+    for url in movie_urls:
+        title = get_movie_title(url)  # Lấy tiêu đề từ trang chi tiết
+        if title:
+            movie_list.append({"url": url, "title": title})  
+    json_data = json.dumps(movie_list, indent=4, ensure_ascii=False)
+    with open("tvphim_movies.json", "w", encoding="utf-8") as f:
+        f.write(json_data)
+
+if __name__ == "__main__":
+    url = "https://tvphim.us"
+    movie_urls = get_movie_urls(url)
+    create_json(movie_urls)
