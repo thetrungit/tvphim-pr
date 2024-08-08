@@ -1,0 +1,27 @@
+{
+    "name": "TVPhim",
+    "version": "1.0.0",
+    "plugin_type": "media",
+    "plugin_id": "tvphim",
+    "description": "Kho phim v\u00e0 ch\u01b0\u01a1ng tr\u00ecnh TV t\u1eeb TVPhim.us",
+    "author": "Your Name",
+    "language": "vi",
+    "url": "https://tvphim.us",
+    "icon": "https://example.com/icon.png",
+    "resources": [
+        {
+            "type": "catalog",
+            "name": "TVPhim Catalog",
+            "base_url": "https://tvphim.us",
+            "search_endpoint": "/search?q=%s",
+            "details_endpoint": "/phim/%s",
+            "languages": [
+                "vi"
+            ],
+            "categories": [
+                "TV Shows",
+                "Movies"
+            ]
+        }
+    ]
+}
